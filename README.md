@@ -9,7 +9,7 @@ Mini-giochi per gli open day dell'indirizzo Informatica (ISISS Gobetti-De Gasper
 - `index.html`: 5 sfide a tab (circuiti, porte logiche, binario, robot, CSS), con livelli e stelle.
 - `carta-identita.html`: pagina HTML semplice da personalizzare nell'editor.
 
-Pagine statiche, nessuna dipendenza: funzionano anche offline con un doppio clic.
+Pagine statiche, nessuna dipendenza, adatte anche a smartphone: funzionano offline con un doppio clic.
 
 ## Uso in laboratorio
 

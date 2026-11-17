@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1126">
+<meta name="description" content="Mini-giochi di elettronica, logica e programmazione per l'open day dell'indirizzo Informatica.">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
 <title>Sfide di Informatica - Open Day</title>
 <style>
 :root{--panel:#18234a;--acc:#4f8cff;--ok:#2ecc71;--ko:#ff5c5c;--yel:#ffd43b;--txt:#eef2ff;--mut:#9aa7d0}
@@ -158,6 +163,54 @@ table.tt{border-collapse:collapse;font-family:Consolas,monospace;font-size:16px;
 #final.show{display:flex}
 .finalBox{background:var(--panel);padding:40px 50px;border-radius:20px;text-align:center;font-size:22px;max-width:560px}
 .finalBox .big{font-size:80px}
+
+/* RESPONSIVE */
+:root{--cell:62px}
+#csvg{max-width:100%;height:auto;display:block;touch-action:manipulation}
+#gsvg{width:800px;max-width:100%;height:auto;display:block}
+.svgbox{flex:1 1 auto;min-width:0}
+.comp,.inbox,.fixg{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none}
+.cell{width:var(--cell);height:var(--cell)}
+.robot{width:var(--cell);height:var(--cell)}
+.prog{max-width:100%}
+.editor{overflow-x:auto;max-width:100%}
+@media (max-width:820px){
+  header{padding:10px 14px;gap:8px}
+  h1{font-size:20px}h1 small{font-size:11px}
+  .stars{font-size:22px;letter-spacing:2px;order:3;width:100%}
+  #resetBtn{font-size:14px;padding:8px 12px}
+  nav{padding:0 10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{font-size:15px;padding:10px 12px;white-space:nowrap;flex-shrink:0}
+  main{margin:0 8px 12px;padding:14px;border-radius:0 12px 12px 12px;min-height:0}
+  .mission{font-size:16px;padding:10px 12px}
+  .feedback{font-size:16px}
+  .intro{font-size:17px}
+  .row{gap:14px}
+  .side{min-width:0;max-width:none;width:100%}
+  .svgbox{padding:6px;width:100%}
+  #logic .svgbox{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #gsvg{min-width:620px}
+  #logic .svgbox::after{content:'↔ scorri per vedere tutto il circuito';display:block;text-align:center;color:var(--mut);font-size:12px;padding-top:4px;position:sticky;left:0}
+  .panel .btn,.tools .btn{font-size:15px;padding:10px 14px}
+  .palette{flex-direction:row;flex-wrap:wrap}
+  .piece{font-size:14px;padding:8px 10px}
+  table.tt{font-size:14px}.tt th,.tt td{padding:4px 8px}
+  .target{font-size:18px}.target b{font-size:44px}
+  .bulbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:420px;margin:14px auto}
+  .bulb{width:auto;padding:8px 4px}.bulb .em{font-size:34px}.bulb .v{font-size:17px}
+  .reg{gap:3px}.reg span{width:34px;height:50px;line-height:50px;font-size:32px;border-radius:7px}.reg .gap{width:8px}
+  :root{--cell:52px}
+  .robot{font-size:34px}.cell{font-size:26px}
+  .prog{width:100%}
+  .arrows button{font-size:26px;padding:6px 12px}
+  .editor{min-width:0;width:100%;font-size:15px}
+  .ln{padding:3px 10px}
+  .browser{min-width:0;width:100%}
+  .view{padding:14px;min-height:0}
+  .finalBox{padding:24px;margin:14px;font-size:18px}
+}
+@media (max-width:380px){:root{--cell:46px}.reg span{width:30px;font-size:28px}}
 </style>
 </head>
 <body>
@@ -215,7 +268,7 @@ table.tt{border-collapse:collapse;font-family:Consolas,monospace;font-size:16px;
   <div class="lvl"><span id="logLvl"></span><span class="dots" id="logDots"></span></div>
   <div class="mission" id="logMission"></div>
   <div class="row">
-    <div class="svgbox"><svg id="gsvg" width="800"></svg></div>
+    <div class="svgbox"><svg id="gsvg"></svg></div>
     <div class="side">
       <div id="gGoals" class="goals"></div>
       <div id="gTable"></div>
@@ -584,7 +637,7 @@ function cRender(){
   const sim=cSimulate();cNameAll();
   const Lo=cLay(cTree),svg=$('#csvg');svg.innerHTML='';
   const x0=40,y0=24,by=y0+Lo.h+40,W=Lo.w+80,H=by+46;
-  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('width',W);svg.setAttribute('height',H);
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.style.width=W+'px';
   cDraw(Lo,x0,y0,svg,sim);
   const cls=cW(cTree.on,sim.short),ry=y0+Lo.ty,xr=x0+Lo.w,mid=x0+Lo.w/2;
   line(svg,x0,ry,x0,by,cls);line(svg,xr,ry,xr,by,cls);line(svg,x0,by,mid-10,by,cls);line(svg,mid+10,by,xr,by,cls);
@@ -736,7 +789,7 @@ function gDrawGate(p,g,s,stIn){
 }
 function gRender(){
   const L=G_LV[gl],v=gEval(gIn),d=gDepths(),svg=$('#gsvg');svg.innerHTML='';
-  svg.setAttribute('viewBox','0 0 800 '+L.h);svg.setAttribute('height',L.h);
+  svg.setAttribute('viewBox','0 0 800 '+L.h);
   const st=id=>d[id]<=gReveal?(v[id]?'on':'off'):'';
   gGates.forEach(g=>g.in.forEach((s,j)=>gWire(svg,s,gInPt(g,j),g.mx?g.mx[j]:null,'lw '+st(s))));
   L.lamps.forEach(l=>gWire(svg,l.src,[l.x-20,l.y],null,'lw '+st(l.src)));
@@ -868,7 +921,7 @@ function robInit(){
   const L=ROB_LV[rl];
   $('#robLvl').textContent='Livello '+(rl+1)+' di '+ROB_LV.length;lvDots('robDots',ROB_LV.length,rl,i=>{rl=i;robInit();});
   $('#robMission').innerHTML=L.t;
-  const g=$('#grid');g.innerHTML='';g.style.gridTemplateColumns='repeat('+L.m[0].length+',62px)';
+  const g=$('#grid');g.innerHTML='';g.style.gridTemplateColumns='repeat('+L.m[0].length+',var(--cell))';
   L.m.forEach((row,y)=>[...row].forEach((c,x)=>{
     const d=document.createElement('div');d.className='cell'+(c==='#'?' wall':'');d.id='c'+x+'_'+y;
     d.textContent=c==='#'?'🧱':c==='B'?'🔋':c==='S'?'⭐':'';
@@ -886,7 +939,8 @@ function robReset(){
   L.m.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==='S')document.getElementById('c'+x+'_'+y).textContent='⭐';}));
   document.querySelectorAll('.blk').forEach(b=>b.classList.remove('cur'));
 }
-function robPlace(){$('#rob').style.transform='translate('+(rx*66)+'px,'+(ry*66)+'px)';}
+function robPlace(){const c=document.querySelector('#grid .cell'),st=c?c.offsetWidth+4:66;$('#rob').style.transform='translate('+(rx*st)+'px,'+(ry*st)+'px)';}
+window.addEventListener('resize',()=>{if(typeof robPlace==='function'&&$('#rob'))robPlace();});
 function robProg(){
   const p=$('#prog');p.innerHTML='';
   if(!prog.length) p.innerHTML='<span class="empty">Il programma è vuoto...</span>';
