@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>La mia pagina</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4ff; text-align: center; padding: 30px; }
+  .card { background: white; max-width: 480px; margin: auto; padding: 30px; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+  button { font-size: 18px; padding: 10px 20px; border: none; border-radius: 8px; background: #3b6cff; color: white; cursor: pointer; margin: 6px; }
+  /* LIVELLO STANDARD: cambia il colore qui sotto, ad esempio in red, green, orange, purple */
+  h1 { color: #3b6cff; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- LIVELLO LITE: cambia solo il testo qui sotto -->
+  <h1>Ciao, sono ...</h1>
+  <p>Il mio hobby preferito e: ...</p>
+
+  <!-- LIVELLO STANDARD: togli i segni di commento per mostrare l'immagine, poi cambia l'emoji -->
+  <!-- <p style="font-size:60px">&#128512;</p> -->
+
+  <!-- LIVELLO APPROFONDITO: aggiungi altre righe, ad esempio -->
+  <!-- <p>La mia materia preferita e: ...</p> -->
+  <!-- <p><b>Da grande voglio fare:</b> ...</p> -->
+
+  <hr>
+  <p>Premi il pulsante e vedi cosa succede:</p>
+  <button onclick="cambiaColore()">Cambia sfondo</button>
+  <button onclick="conta()">Clic: <span id="n">0</span></button>
+</div>
+
+<script>
+  // Questa parte fa "reagire" la pagina. Non serve toccarla.
+  var colori = ["#f0f4ff", "#ffe9e9", "#e9ffe9", "#fff7d6", "#f0e6ff"];
+  var i = 0;
+  function cambiaColore() {
+    i = (i + 1) % colori.length;
+    document.body.style.background = colori[i];
+  }
+  var c = 0;
+  function conta() {
+    c++;
+    document.getElementById("n").textContent = c;
+  }
+</script>
+</body>
+</html>

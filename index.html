@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sfide di Informatica - Open Day</title>
+<style>
+:root{--panel:#18234a;--acc:#4f8cff;--ok:#2ecc71;--ko:#ff5c5c;--yel:#ffd43b;--txt:#eef2ff;--mut:#9aa7d0}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 0%,#1d2b5c,#0b1126 70%);color:var(--txt);min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px;flex-wrap:wrap}
+h1{margin:0;font-size:26px}
+h1 small{display:block;font-size:13px;color:var(--mut);font-weight:normal}
+.stars{font-size:30px;letter-spacing:4px}
+.btn{font:inherit;font-size:16px;padding:10px 18px;border:none;border-radius:10px;background:var(--acc);color:#fff;cursor:pointer;font-weight:600;transition:transform .1s,filter .2s;user-select:none;touch-action:none}
+.btn:hover{filter:brightness(1.15)}.btn:active{transform:scale(.96)}
+.btn.sec{background:#33407a}.btn.ok{background:var(--ok)}.btn.on{background:var(--ok)}.btn.press{background:var(--yel);color:#222}
+.btn:disabled{opacity:.5;cursor:default}
+nav{display:flex;gap:6px;padding:0 24px;flex-wrap:wrap}
+nav button{font:inherit;font-size:17px;padding:12px 16px;border:none;border-radius:12px 12px 0 0;background:#1a2550;color:var(--mut);cursor:pointer;font-weight:600}
+nav button.active{background:var(--panel);color:#fff}
+nav button.done::after{content:" ⭐"}
+main{background:var(--panel);margin:0 24px 24px;border-radius:0 16px 16px 16px;padding:24px;min-height:600px}
+section{display:none;animation:fade .35s}
+section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mission{font-size:19px;background:#0f1a3d;border-left:6px solid var(--yel);padding:12px 16px;border-radius:8px;margin-bottom:16px;line-height:1.45}
+.mission b{color:var(--yel)}
+.lvl{color:var(--mut);font-size:14px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dots span{width:14px;height:14px;border-radius:50%;background:#33407a;display:inline-block;margin-right:6px;cursor:pointer;vertical-align:middle}
+.dots span.cur{background:var(--yel)}
+.feedback{min-height:32px;font-size:18px;margin-top:14px;font-weight:600;line-height:1.4}
+.feedback.ok{color:var(--ok)}.feedback.ko{color:var(--ko)}.feedback.info{color:var(--yel)}
+.row{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.tools{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+code{background:#0b1022;padding:1px 6px;border-radius:4px;color:#ffb86b}
+.side{display:flex;flex-direction:column;gap:10px;min-width:240px;max-width:340px}
+.side h4{margin:0;color:var(--mut);font-weight:600}
+.legend{font-size:14px;color:#cfd7f5;background:#0f1a3d;border-radius:10px;padding:10px 14px;line-height:1.55}
+.legend b{color:#fff}
+
+/* HOME */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px}
+.card{background:#0f1a3d;padding:22px;border-radius:14px;cursor:pointer;transition:.2s;border:2px solid transparent}
+.card:hover{transform:translateY(-4px);border-color:var(--acc)}
+.card .big{font-size:46px}.card h3{margin:8px 0 4px}.card p{margin:0;color:var(--mut);font-size:14px}
+.intro{font-size:20px;line-height:1.5}
+
+/* SVG COMUNI */
+.svgbox{background:#0f1a3d;border-radius:14px;padding:10px;overflow-x:auto;max-width:100%}
+svg text{font-family:"Segoe UI",Arial,sans-serif}
+.w{stroke:#5a6aa8;stroke-width:5;fill:none;stroke-linecap:round}
+.w.flow{stroke:var(--yel);stroke-dasharray:14 10;animation:flow .6s linear infinite}
+.w.short{stroke:var(--ko);stroke-dasharray:8 6;animation:flow .2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.sym{stroke:#dfe6ff;stroke-width:3;fill:none;stroke-linecap:round;transition:all .2s}
+.dotc{fill:#dfe6ff}
+.lampc{fill:#2a3360;stroke:#dfe6ff;stroke-width:3;transition:all .25s}
+.lampc.lit{fill:var(--yel);stroke:#fff3b0;filter:drop-shadow(0 0 10px #ffd43b) drop-shadow(0 0 22px #ffd43b)}
+.lampc.dead{fill:#3a3a3a;stroke:#777}
+.ledc{fill:#5a2a2a;stroke:#dfe6ff;stroke-width:3;transition:all .25s}
+.ledc.lit{fill:#ff3b3b;filter:drop-shadow(0 0 10px #ff3b3b) drop-shadow(0 0 20px #ff3b3b)}
+.lbl{fill:var(--mut);font-size:13px;text-anchor:middle}
+.lblb{fill:#fff;font-size:14px;font-weight:700;text-anchor:middle}
+.comp{cursor:pointer}
+.comp:hover .hov{fill:#ffffff10}
+.hov{fill:transparent}
+.fixbox{fill:#ffd43b14;stroke:var(--yel);stroke-dasharray:5 4;stroke-width:2}
+.ptag{font-size:13px;font-weight:700;text-anchor:middle;fill:var(--yel)}
+.ptag.good{fill:var(--ok)}.ptag.bad{fill:var(--ko)}
+.batt{stroke:#dfe6ff;stroke-width:4}
+.panel{display:flex;gap:10px;flex-wrap:wrap}
+.palette{display:flex;flex-direction:column;gap:6px}
+.piece{padding:8px 12px;background:#202d63;border:2px solid transparent;border-radius:10px;cursor:pointer;user-select:none;font-size:16px}
+.piece:hover{background:#2a3874}
+.piece.sel{border-color:var(--yel);background:#2c3b7d}
+
+/* PORTE LOGICHE */
+.lw{stroke:#5a6aa8;stroke-width:4;fill:none;transition:stroke .3s}
+.lw.on{stroke:var(--ok)}.lw.off{stroke:#d05a5a}
+.gs{fill:#22306a;stroke:#dfe6ff;stroke-width:3;transition:all .3s}
+.gs.on{stroke:var(--ok);fill:#1d4a3a}.gs.off{stroke:#ff8a8a;fill:#3a2430}
+.gs2{fill:none;stroke:#dfe6ff;stroke-width:3}
+.gs2.on{stroke:var(--ok)}.gs2.off{stroke:#ff8a8a}
+.gt{fill:#fff;font-size:11px;font-weight:800;text-anchor:middle;pointer-events:none}
+.inbox rect{fill:#3a4470;transition:fill .2s}.inbox.on rect{fill:var(--ok)}
+.inbox{cursor:pointer}.inbox.locked{cursor:default}
+.it{fill:#fff;font-size:17px;font-weight:800;text-anchor:middle}
+.iv{fill:#fff;font-size:11px;text-anchor:middle}
+.fixg{cursor:pointer}
+.fixg:hover .gs{stroke:var(--yel)}
+.goals{display:flex;gap:10px;flex-wrap:wrap}
+.goal{background:#0f1a3d;border-radius:10px;padding:8px 14px;font-weight:600}
+.goal.okg{background:#1d4a3a}
+table.tt{border-collapse:collapse;font-family:Consolas,monospace;font-size:16px;background:#0f1a3d;border-radius:10px;overflow:hidden}
+.tt th,.tt td{padding:5px 12px;text-align:center;border-bottom:1px solid #22306a}
+.tt th{color:var(--mut);font-family:"Segoe UI",Arial,sans-serif;font-size:13px}
+.tt tr.cur td{background:#2c3b7d}
+.tt td.good{color:var(--ok)}.tt td.bad{color:var(--ko)}
+
+/* BINARIO */
+.target{font-size:22px;text-align:center}.target b{font-size:56px;color:var(--yel);display:block}
+.target small{display:block;color:var(--mut);font-size:15px;margin-top:4px}
+.bulbs{display:flex;gap:10px;justify-content:center;margin:18px 0;flex-wrap:wrap}
+.bulb{cursor:pointer;text-align:center;padding:10px 6px;border-radius:14px;background:#0f1a3d;width:86px;user-select:none;transition:.2s}
+.bulb:hover{background:#17245a}
+.bulb .em{font-size:42px;line-height:1}
+.bulb .v{font-size:20px;font-weight:700;margin-top:6px}
+.em.off{filter:grayscale(1) brightness(.6)}
+.em.lit{filter:drop-shadow(0 0 10px #ffd43b) drop-shadow(0 0 22px #ffd43b)}
+.reg{display:flex;justify-content:center;align-items:center;gap:6px;font-family:Consolas,"Courier New",monospace;margin-top:6px}
+.reg span{display:inline-block;width:58px;height:74px;line-height:74px;text-align:center;font-size:52px;font-weight:800;border-radius:10px;background:#0b1022;color:#4a5580;transition:all .2s}
+.reg span.one{color:#0b1022;background:var(--yel);box-shadow:0 0 18px #ffd43b88}
+.reg .gap{width:18px;background:none;box-shadow:none}
+.reg.okreg span.one{background:var(--ok);box-shadow:0 0 18px #2ecc7188}
+.regsub{text-align:center;color:var(--mut);margin-top:8px;font-size:16px}
+.regsub b{color:#fff;font-size:26px}
+
+/* ROBOT */
+.grid{position:relative;display:grid;gap:4px;background:#0f1a3d;padding:4px;border-radius:12px;width:max-content}
+.cell{width:62px;height:62px;background:#22306a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.cell.wall{background:#4a2f2f}
+.robot{position:absolute;left:4px;top:4px;width:62px;height:62px;display:flex;align-items:center;justify-content:center;font-size:42px;transition:transform .35s;pointer-events:none}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px) rotate(-10deg)}75%{transform:translateX(8px) rotate(10deg)}}
+.prog{display:flex;flex-wrap:wrap;gap:6px;min-height:70px;padding:8px;background:#0f1a3d;border-radius:12px;width:430px;align-content:flex-start}
+.prog .empty{color:var(--mut);padding:12px}
+.blk{font-size:28px;background:#2c3b7d;border-radius:8px;padding:4px 8px;cursor:pointer;user-select:none}
+.blk.cur{background:var(--yel)}
+.arrows{display:flex;gap:8px;margin:10px 0}
+.arrows button{font-size:30px;background:#2c3b7d;border:none;border-radius:10px;padding:8px 14px;cursor:pointer}
+.arrows button:hover{background:#3a4c9c}
+.count{color:var(--mut);font-size:14px;margin-top:4px}
+
+/* CSS */
+.editor{background:#0b1022;border-radius:12px;padding:16px 0;font-family:Consolas,"Courier New",monospace;font-size:18px;min-width:430px}
+.ln{padding:4px 16px;opacity:0;animation:typeIn .4s forwards;white-space:nowrap;transition:background .3s}
+@keyframes typeIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.ln .no{color:#4a5580;display:inline-block;width:30px;user-select:none}
+.csel{color:var(--yel)}.prop{color:#6cd4ff}.punc{color:#aab}
+.ln input{font:inherit;background:#1c2550;color:#ffb86b;border:1px solid #33407a;border-radius:5px;padding:1px 6px}
+.ln input:focus{outline:2px solid var(--yel)}
+.ln input.bad{color:var(--ko);border-color:var(--ko)}
+.ln.hit{background:#2ecc7126}
+.browser{flex:1;min-width:320px;background:#dfe6f5;border-radius:12px;overflow:hidden}
+.bar{background:#c3cbe0;padding:8px 12px;display:flex;align-items:center;gap:6px;color:#334;font-size:13px}
+.bar i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.bar .url{background:#fff;border-radius:6px;padding:3px 10px;margin-left:10px;flex:1}
+.view{padding:24px;min-height:300px}
+#fake{transition:all .5s}
+#fake h2{margin-top:0}
+.colors{font-size:13px;color:var(--mut);margin-top:10px;line-height:1.6}
+
+/* EFFETTI */
+.conf{position:fixed;top:-40px;animation:fall 2.6s ease-in forwards;pointer-events:none;z-index:99}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+#final{display:none;position:fixed;inset:0;background:#000b;align-items:center;justify-content:center;z-index:50}
+#final.show{display:flex}
+.finalBox{background:var(--panel);padding:40px 50px;border-radius:20px;text-align:center;font-size:22px;max-width:560px}
+.finalBox .big{font-size:80px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🖥️ Sfide di Informatica<small>Open Day · Indirizzo Informatica · ISISS Gobetti-De Gasperi</small></h1>
+  <div class="stars" id="stars">☆☆☆☆☆</div>
+  <button class="btn sec" id="resetBtn">🔄 Nuovo giocatore</button>
+</header>
+
+<nav>
+  <button data-tab="home" class="active">🏠 Inizio</button>
+  <button data-tab="circ">⚡ Circuiti</button>
+  <button data-tab="logic">🔀 Porte logiche</button>
+  <button data-tab="bin">💡 Binario</button>
+  <button data-tab="robot">🤖 Robot</button>
+  <button data-tab="css">🎨 Codice CSS</button>
+</nav>
+
+<main>
+<section id="home" class="active">
+  <p class="intro">Benvenuto! Qui trovi <b>5 sfide</b> di elettronica, logica e programmazione, ognuna con più livelli.<br>
+  Completa tutti i livelli di una sfida per vincere una stella ⭐. Riesci a raccoglierle tutte?</p>
+  <div class="cards">
+    <div class="card" data-go="circ"><div class="big">⚡</div><h3>Circuiti</h3><p>Interruttori, pulsanti, deviatori e LED. Prevedi, comanda e ripara.</p></div>
+    <div class="card" data-go="logic"><div class="big">🔀</div><h3>Porte logiche</h3><p>Il cervello del computer: AND, OR, NOT, XOR... Prevedi e correggi i circuiti.</p></div>
+    <div class="card" data-go="bin"><div class="big">💡</div><h3>Binario</h3><p>Un byte, 8 bit: scrivi numeri e lettere come un computer.</p></div>
+    <div class="card" data-go="robot"><div class="big">🤖</div><h3>Robot</h3><p>Programma il robot per arrivare alla batteria.</p></div>
+    <div class="card" data-go="css"><div class="big">🎨</div><h3>Codice CSS</h3><p>Trova la riga giusta e cambia l'aspetto di un sito.</p></div>
+  </div>
+</section>
+
+<section id="circ">
+  <div class="lvl"><span id="circLvl"></span><span class="dots" id="circDots"></span></div>
+  <div class="mission" id="circMission"></div>
+  <div class="row">
+    <div class="svgbox"><svg id="csvg"></svg></div>
+    <div class="side">
+      <h4 id="cPanelTitle">Comandi</h4>
+      <div class="panel" id="cPanel"></div>
+      <div id="cPalWrap"><h4>Pezzi di ricambio</h4><div class="palette" id="cPal"></div></div>
+      <div class="legend" id="cLegend"></div>
+    </div>
+  </div>
+  <div class="feedback" id="circFb"></div>
+  <div class="tools">
+    <button class="btn" id="circSim" onclick="cSimRun()">▶️ Avvia simulazione</button>
+    <button class="btn sec" id="circRetry" onclick="cRetry()">🎲 Nuova situazione</button>
+    <button class="btn sec" onclick="cInit()">↩️ Ricomincia livello</button>
+    <button class="btn ok" id="circNext" onclick="cl++;cInit()">Livello successivo ▶</button>
+  </div>
+</section>
+
+<section id="logic">
+  <div class="lvl"><span id="logLvl"></span><span class="dots" id="logDots"></span></div>
+  <div class="mission" id="logMission"></div>
+  <div class="row">
+    <div class="svgbox"><svg id="gsvg" width="800"></svg></div>
+    <div class="side">
+      <div id="gGoals" class="goals"></div>
+      <div id="gTable"></div>
+      <div class="legend">
+        <b>AND</b>: 1 se <u>tutti</u> gli ingressi sono 1<br>
+        <b>OR</b>: 1 se <u>almeno uno</u> è 1<br>
+        <b>NOT</b>: inverte (0 diventa 1)<br>
+        <b>XOR</b>: 1 se gli ingressi sono <u>diversi</u><br>
+        <b>NAND</b> / <b>NOR</b>: il contrario di AND / OR (il pallino ○ significa "inverti")
+      </div>
+    </div>
+  </div>
+  <div class="feedback" id="logFb"></div>
+  <div class="tools">
+    <button class="btn" id="logSim" onclick="gSimRun()">▶️ Avvia simulazione</button>
+    <button class="btn sec" id="logRetry" onclick="gRetry()">🎲 Nuova situazione</button>
+    <button class="btn ok" id="logNext" onclick="gl++;gInit()">Livello successivo ▶</button>
+  </div>
+</section>
+
+<section id="bin">
+  <div class="lvl" id="binLvl"></div>
+  <div class="mission">Un <b>byte</b> è fatto di <b>8 bit</b>: 8 lampadine che possono essere accese (1) o spente (0). Ognuna vale il doppio di quella alla sua destra. Accendi quelle giuste!</div>
+  <div class="target" id="binTarget"></div>
+  <div class="bulbs" id="bulbs"></div>
+  <div class="reg" id="reg"></div>
+  <div class="regsub" id="regsub"></div>
+  <div class="feedback" id="binFb" style="text-align:center"></div>
+</section>
+
+<section id="robot">
+  <div class="lvl"><span id="robLvl"></span><span class="dots" id="robDots"></span></div>
+  <div class="mission" id="robMission"></div>
+  <div class="row">
+    <div class="grid" id="grid"></div>
+    <div>
+      <b>Il tuo programma</b> <span class="count" id="robCount"></span>
+      <div class="prog" id="prog"></div>
+      <div class="arrows">
+        <button onclick="robAdd('U')">⬆️</button><button onclick="robAdd('D')">⬇️</button>
+        <button onclick="robAdd('L')">⬅️</button><button onclick="robAdd('R')">➡️</button>
+      </div>
+      <div class="tools">
+        <button class="btn ok" onclick="robRun()">▶️ Esegui</button>
+        <button class="btn sec" onclick="robUndo()">↩️ Annulla</button>
+        <button class="btn sec" onclick="robClear()">🗑️ Svuota</button>
+      </div>
+      <p class="count">Suggerimento: clicca un blocco del programma per toglierlo.</p>
+    </div>
+  </div>
+  <div class="feedback" id="robFb"></div>
+  <div class="tools"><button class="btn ok" id="robNext" onclick="rl++;robInit()">Livello successivo ▶</button></div>
+</section>
+
+<section id="css">
+  <div class="lvl"><span id="cssLvl"></span><span class="dots" id="cssDots"></span></div>
+  <div class="mission" id="cssMission"></div>
+  <div class="row">
+    <div>
+      <div class="editor" id="editor"></div>
+      <div class="colors">Colori in inglese: <b>red</b> rosso · <b>green</b> verde · <b>blue</b> blu · <b>yellow</b> giallo · <b>orange</b> arancione · <b>pink</b> rosa · <b>purple</b> viola · <b>black</b> nero · <b>white</b> bianco</div>
+    </div>
+    <div class="browser">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="url">www.ilmiosito.it</span></div>
+      <div class="view">
+        <div id="fake">
+          <h2>🐱 Il mio sito</h2>
+          <p>Benvenuto nella mia pagina! Qui parlo dei miei gatti e dei miei videogiochi preferiti.</p>
+          <p>Questa pagina è disegnata dal codice CSS qui a fianco.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="feedback" id="cssFb"></div>
+  <div class="tools">
+    <button class="btn sec" onclick="cssHint()">💡 Aiuto</button>
+    <button class="btn sec" onclick="cssBuild()">↩️ Ripristina codice</button>
+    <button class="btn ok" id="cssNext" onclick="cm++;cssInit()">Prossima missione ▶</button>
+  </div>
+</section>
+</main>
+
+<div id="final"><div class="finalBox">
+  <div class="big">🏆</div>
+  <p><b>5 stelle su 5!</b><br>Hai riparato circuiti, previsto porte logiche, scritto in binario, programmato un robot e modificato codice CSS.</p>
+  <p>Hai proprio la stoffa da informatico! 💻</p>
+  <button class="btn ok" onclick="resetAll()">🔄 Nuovo giocatore</button>
+  <button class="btn sec" onclick="document.getElementById('final').classList.remove('show')">Chiudi</button>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const GAMES=['circ','logic','bin','robot','css'];
+let done={};
+const rnd=n=>Math.floor(Math.random()*n);
+const clone=o=>JSON.parse(JSON.stringify(o));
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function line(p,x1,y1,x2,y2,cls){return el('line',{x1,y1,x2,y2,class:cls},p);}
+
+/* ---------- GENERALE ---------- */
+function goTab(t){
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));
+  document.querySelectorAll('section').forEach(x=>x.classList.toggle('active',x.id===t));
+  if(t==='css'&&!$('#editor').children.length) cssBuild();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>goTab(b.dataset.tab));
+document.querySelectorAll('.card').forEach(c=>c.onclick=()=>goTab(c.dataset.go));
+function updateStars(){
+  $('#stars').textContent=GAMES.map(g=>done[g]?'⭐':'☆').join('');
+  GAMES.forEach(g=>document.querySelector('nav [data-tab="'+g+'"]').classList.toggle('done',!!done[g]));
+}
+function complete(g){
+  if(done[g]) return;
+  done[g]=true;updateStars();confetti(40);
+  if(GAMES.every(x=>done[x])) setTimeout(()=>{$('#final').classList.add('show');confetti(90);},900);
+}
+function fb(id,cls,msg){const e=document.getElementById(id);e.className='feedback '+cls;e.innerHTML=msg;}
+function confetti(n){
+  const em=['🎉','⭐','✨','💡','🎊'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('span');s.className='conf';s.textContent=em[i%em.length];
+    s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.6+'s';s.style.fontSize=(18+Math.random()*22)+'px';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),3400);
+  }
+}
+function lvDots(id,n,cur,go){
+  const d=document.getElementById(id);d.innerHTML='';
+  for(let i=0;i<n;i++){const s=document.createElement('span');if(i===cur)s.className='cur';s.title='Livello '+(i+1);s.onclick=()=>go(i);d.appendChild(s);}
+}
+let resetArmed=false;
+$('#resetBtn').onclick=()=>{
+  if(!resetArmed){resetArmed=true;$('#resetBtn').textContent='Sicuro? Premi di nuovo';setTimeout(()=>{resetArmed=false;$('#resetBtn').textContent='🔄 Nuovo giocatore';},3000);return;}
+  resetAll();
+};
+function resetAll(){
+  resetArmed=false;$('#resetBtn').textContent='🔄 Nuovo giocatore';
+  done={};updateStars();$('#final').classList.remove('show');
+  cl=0;cInit();gl=0;gInit();binInit();rl=0;robInit();cm=0;cssInit();goTab('home');
+}
+
+/* =========================================================
+   1. CIRCUITI
+   Albero serie {s:[...]} / parallelo {p:[...]} / componente {t,k}
+   ========================================================= */
+const CW=100,CH=78,CTY=42;
+const C_LV=[
+  {title:'Tipi di comando',goal:'all',
+   t:`Ci sono tre comandi diversi: un <b>interruttore</b>, un <b>pulsante NA</b> (normalmente aperto) e un <b>pulsante NC</b> (normalmente chiuso). Provali tutti, poi riesci a far accendere <b>tutte e tre le lampadine nello stesso momento</b>?`,
+   tree:{p:[{s:[{t:'sw',k:'a'},{t:'lamp',k:'b'}]},{s:[{t:'pna',k:'c'},{t:'lamp',k:'d'}]},{s:[{t:'pnc',k:'e'},{t:'lamp',k:'f'}]}]}},
+  {title:'Prevedi',mode:'predict',rand:['a','c','g'],
+   t:`Guarda bene la posizione degli interruttori (qui non puoi toccarli). <b>Prevedi</b> quali lampadine si accenderanno: clicca su ogni lampadina per scegliere "accesa" o "spenta". Poi premi <b>Avvia simulazione</b>. Attenzione: la corrente sceglie sempre la strada più facile!`,
+   tree:{s:[{t:'sw',k:'a'},{p:[{t:'lamp',k:'b'},{s:[{t:'sw',k:'c'},{t:'lamp',k:'d'}]},{t:'sw',k:'g'}]},{t:'lamp',k:'e'}]}},
+  {title:'Le scale di casa',goal:'stairs',dev:{D1:1,D2:0},
+   t:`Questo è il vero circuito delle scale: due <b>deviatori</b>, uno al piano terra (D1) e uno al primo piano (D2). Ogni deviatore manda la corrente "su" oppure "giù". Accendi la luce con <b>D1</b>, poi spegnila con <b>D2</b>.`,
+   tree:{s:[{t:'lamp',k:'a'},{p:[{s:[{t:'dev',k:'b',g:'D1',pos:1},{t:'dev',k:'c',g:'D2',pos:1}]},{s:[{t:'dev',k:'d',g:'D1',pos:0},{t:'dev',k:'e',g:'D2',pos:0}]}]}]}},
+  {title:'Ripara',mode:'fix',loads:2,pal:['sw','pna','lamp','wire','open'],
+   t:`Questo circuito doveva accendere <b>due lampadine insieme</b> con un interruttore, ma l'elettricista ha sbagliato qualcosa. Sostituisci i pezzi segnati con 🔧: scegli un ricambio a destra, poi clicca sul componente da cambiare.`,
+   tree:{s:[{t:'wire',k:'a',fix:1},{p:[{t:'lamp',k:'b'},{t:'broken',k:'c',fix:1}]}]}},
+  {title:'Cortocircuito e LED',mode:'fix',loads:2,pal:['lamp','wire','open','led'],
+   t:`Due problemi: un <b>cortocircuito</b> e un <b>LED montato al contrario</b> (il LED fa passare la corrente in un solo verso). Gira il LED (cliccaci sopra) e guarda cosa succede con l'interruttore chiuso. Poi ripara: con l'interruttore chiuso devono accendersi <b>la lampadina e il LED</b>, senza cortocircuiti.`,
+   tree:{s:[{p:[{t:'lamp',k:'a'},{t:'wire',k:'b',fix:1}]},{t:'led',k:'c',dir:-1,fix:1},{t:'sw',k:'d'}]}}
+];
+const C_LEG={
+  sw:'🎚️ <b>Interruttore</b>: resta come lo lasci (la luce della camera).',
+  pna:'🔔 <b>Pulsante NA</b>: chiude il circuito solo finché lo tieni premuto (il campanello).',
+  pnc:'🧊 <b>Pulsante NC</b>: chiuso a riposo, si apre quando lo premi (la luce del frigorifero!).',
+  dev:'🪜 <b>Deviatore</b>: manda la corrente su una strada oppure sull\'altra.',
+  led:'🔴 <b>LED</b>: si accende solo se la corrente passa nel verso della freccia.',
+  broken:'💥 <b>Lampadina bruciata</b>: il filamento è rotto, la corrente non passa.'
+};
+const C_PAL={sw:'🎚️ Interruttore',pna:'🔔 Pulsante NA',lamp:'💡 Lampadina',wire:'〰️ Filo',open:'✂️ Nessun collegamento',led:'🔴 LED'};
+let cl=0,cTree,cst={},cPred={},cShowFlow=true,cRevealed=false,cSel=null,cWon=false,cHist=[],cNames={};
+
+function leaves(n,a=[]){if(!n)return a;if(n.s)n.s.forEach(x=>leaves(x,a));else if(n.p)n.p.forEach(x=>leaves(x,a));else a.push(n);return a;}
+function cLoads(){return leaves(cTree).filter(n=>['lamp','led','broken'].includes(n.t));}
+function cControls(){
+  const out=[],seen={};
+  leaves(cTree).forEach(n=>{
+    if(['sw','pna','pnc'].includes(n.t)) out.push({key:n.k,t:n.t});
+    else if(n.t==='dev'&&!seen[n.g]){seen[n.g]=1;out.push({key:n.g,t:'dev'});}
+  });
+  return out;
+}
+function cNameAll(){
+  let L=0,S=0,P=0;cNames={};
+  leaves(cTree).forEach(n=>{
+    if(n.t==='lamp'||n.t==='broken') cNames[n.k]='L'+(++L);
+    else if(n.t==='sw') cNames[n.k]='S'+(++S);
+    else if(n.t==='pna') cNames[n.k]='P'+(++P)+' (NA)';
+    else if(n.t==='pnc') cNames[n.k]='P'+(++P)+' (NC)';
+    else if(n.t==='led') cNames[n.k]='LED';
+    else if(n.t==='dev') cNames[n.k]=n.g+(n.pos?' su':' giù');
+    else cNames[n.k]='';
+  });
+}
+function cIsLoad(t){return t==='lamp'||t==='led';}
+function cCond(n){
+  switch(n.t){
+    case 'wire':case 'lamp':return true;
+    case 'broken':case 'open':return false;
+    case 'sw':case 'pna':return !!cst[n.k];
+    case 'pnc':return !cst[n.k];
+    case 'dev':return cst[n.g]===n.pos;
+    case 'led':return n.dir===1;
+  }
+}
+function cAnn(n){ // c = conduce, z = conduce senza carichi (corto)
+  if(n.s){n.s.forEach(cAnn);n.c=n.s.every(x=>x.c);n.z=n.c&&n.s.every(x=>x.z);}
+  else if(n.p){n.p.forEach(cAnn);n.c=n.p.some(x=>x.c);n.z=n.p.some(x=>x.c&&x.z);}
+  else{n.c=cCond(n);n.z=n.c&&!cIsLoad(n.t);}
+}
+function cCarry(n,on){
+  n.on=on;
+  if(n.s) n.s.forEach(x=>cCarry(x,on));
+  else if(n.p) n.p.forEach(x=>cCarry(x,on&&x.c&&(n.z?x.z:true)));
+}
+function cSimulate(){cAnn(cTree);const short=cTree.c&&cTree.z;cCarry(cTree,cTree.c);return {short};}
+
+function cLay(n){
+  if(n.s){const ch=n.s.map(cLay);const ty=Math.max(...ch.map(c=>c.ty));const below=Math.max(...ch.map(c=>c.h-c.ty));return {n,ch,w:ch.reduce((a,c)=>a+c.w,0),h:ty+below,ty,kind:'s'};}
+  if(n.p){const ch=n.p.map(cLay);const w=Math.max(...ch.map(c=>c.w))+40;let h=0;ch.forEach((c,i)=>{c.oy=h;h+=c.h+(i<ch.length-1?6:0);});return {n,ch,w,h,ty:ch[0].ty,kind:'p'};}
+  return {n,w:CW,h:CH,ty:CTY,kind:'l'};
+}
+function cW(on,short){if(!cShowFlow||!on)return 'w';return 'w '+(short?'short':'flow');}
+function cDraw(Lo,x,y,svg,sim){
+  const n=Lo.n,cls=cW(n.on,sim.short);
+  if(Lo.kind==='s'){let cx=x;Lo.ch.forEach(c=>{cDraw(c,cx,y+Lo.ty-c.ty,svg,sim);cx+=c.w;});}
+  else if(Lo.kind==='p'){
+    const ys=[];
+    Lo.ch.forEach(c=>{const by=y+c.oy;cDraw(c,x+20,by,svg,sim);line(svg,x+20+c.w,by+c.ty,x+Lo.w-20,by+c.ty,cW(c.n.on,sim.short));ys.push(by+c.ty);});
+    line(svg,x,y+Lo.ty,x+20,y+Lo.ty,cls);line(svg,x+Lo.w-20,y+Lo.ty,x+Lo.w,y+Lo.ty,cls);
+    line(svg,x+20,ys[0],x+20,ys[ys.length-1],cls);line(svg,x+Lo.w-20,ys[0],x+Lo.w-20,ys[ys.length-1],cls);
+  }
+  else cLeaf(n,x,y,svg,sim);
+}
+function cLeaf(n,x,y,svg,sim){
+  const L=C_LV[cl],g=el('g',{class:'comp'},svg),cy=y+CTY,cx=x+CW/2,cls=cW(n.on,sim.short),t=n.t;
+  el('rect',{x:x+4,y:y+4,width:CW-8,height:CH-8,rx:10,class:n.fix&&L.mode==='fix'?'fixbox':'hov'},g);
+  if(n.fix&&L.mode==='fix') el('text',{x:x+CW-20,y:y+22,'font-size':15},g,'🔧');
+  const hw={wire:0,open:16,lamp:16,broken:16,sw:20,dev:20,pna:20,pnc:20,led:14}[t];
+  line(g,x,cy,cx-hw,cy,cls);line(g,cx+hw,cy,x+CW,cy,cls);
+  const name=cNames[n.k];
+  if(t==='wire') line(g,cx,cy,cx,cy,cls);
+  if(t==='open'){el('circle',{cx:cx-16,cy,r:4,class:'dotc'},g);el('circle',{cx:cx+16,cy,r:4,class:'dotc'},g);el('text',{x:cx,y:cy+6,'font-size':16,'text-anchor':'middle'},g,'✂️');}
+  if(t==='lamp'||t==='broken'){
+    const lit=t==='lamp'&&n.on&&cShowFlow;
+    el('circle',{cx,cy,r:16,class:'lampc'+(lit?' lit':'')+(t==='broken'?' dead':'')},g);
+    line(g,cx-11,cy-11,cx+11,cy+11,'sym');line(g,cx-11,cy+11,cx+11,cy-11,'sym');
+    el('text',{x:cx,y:cy+34,class:t==='broken'?'lbl':'lblb'},g,t==='broken'?name+' 💥 bruciata':name);
+  }
+  if(t==='sw'||t==='dev'){
+    const closed=t==='sw'?!!cst[n.k]:cst[n.g]===n.pos;
+    el('circle',{cx:cx-20,cy,r:4,class:'dotc'},g);el('circle',{cx:cx+20,cy,r:4,class:'dotc'},g);
+    el('line',{x1:cx-20,y1:cy,x2:cx+20,y2:cy,class:'sym',transform:'rotate('+(closed?0:-30)+' '+(cx-20)+' '+cy+')',style:'stroke:'+(closed?'#2ecc71':'#ff8a8a')},g);
+    el('text',{x:cx,y:cy+34,class:'lblb'},g,name);
+  }
+  if(t==='pna'||t==='pnc'){
+    const pr=!!cst[n.k];
+    el('circle',{cx:cx-20,cy,r:4,class:'dotc'},g);el('circle',{cx:cx+20,cy,r:4,class:'dotc'},g);
+    const yb=t==='pna'?(pr?cy-3:cy-15):(pr?cy+14:cy+3);
+    const touch=t==='pna'?pr:!pr;
+    el('line',{x1:cx-22,y1:yb,x2:cx+22,y2:yb,class:'sym',style:'stroke:'+(touch?'#2ecc71':'#ff8a8a')},g);
+    line(g,cx,yb,cx,cy-26,'sym');line(g,cx-7,cy-26,cx+7,cy-26,'sym');
+    el('text',{x:cx,y:cy+34,class:'lblb'},g,name);
+  }
+  if(t==='led'){
+    const lit=n.on&&cShowFlow,d=n.dir;
+    el('polygon',{points:[[cx-11*d,cy-12],[cx-11*d,cy+12],[cx+10*d,cy]].map(p=>p.join(',')).join(' '),class:'ledc'+(lit?' lit':'')},g);
+    line(g,cx+10*d,cy-12,cx+10*d,cy+12,'sym');
+    el('text',{x:cx+8,y:cy-16,'font-size':12,fill:'#ff8a8a'},g,'↗↗');
+    el('text',{x:cx,y:cy+34,class:'lblb'},g,'LED'+(d===1?'':' (girato)'));
+  }
+  if(L.mode==='predict'&&(t==='lamp')){
+    let txt,c='ptag';
+    if(!cRevealed) txt=cPred[n.k]===undefined?'❓ clicca':(cPred[n.k]?'💡 accesa?':'⚫ spenta?');
+    else{const lit=!!n.on;txt=(cPred[n.k]===lit?'✅ ':'❌ ')+(lit?'accesa':'spenta');c+=cPred[n.k]===lit?' good':' bad';}
+    el('text',{x:cx,y:y+14,class:c},g,txt);
+  }
+  g.addEventListener('pointerdown',e=>{e.preventDefault();cAct(n);});
+}
+function cAct(n){
+  const L=C_LV[cl];
+  if(L.mode==='predict'){
+    if(n.t==='lamp'&&!cRevealed){cPred[n.k]=cPred[n.k]===true?false:true;cRender();}
+    return;
+  }
+  if(cSel&&n.fix){
+    n.t=cSel;if(cSel==='led')n.dir=1;delete cst[n.k];
+    cSel=null;document.querySelectorAll('#cPal .piece').forEach(p=>p.classList.remove('sel'));
+    cRender();return;
+  }
+  if(n.t==='led'&&n.fix){n.dir=-n.dir;cRender();return;}
+  if(n.t==='sw'){cst[n.k]=!cst[n.k];cRender();}
+  else if(n.t==='dev') cDev(n.g);
+  else if(n.t==='pna'||n.t==='pnc'){cst[n.k]=true;cRender();}
+}
+function cDev(g){
+  cst[g]=cst[g]?0:1;cRender();
+  if(C_LV[cl].goal==='stairs'&&!cWon){
+    const lit=!!cLoads()[0].on;cHist.push(g+(lit?'on':'off'));
+    const i=cHist.indexOf('D1on');
+    if(i>=0&&cHist.slice(i+1).includes('D2off')) cWin(`✅ Esatto! Con due deviatori puoi accendere e spegnere la stessa luce da due punti diversi. La luce è accesa quando i due deviatori sono <b>nella stessa posizione</b>.`);
+    else fb('circFb','info',lit?'Luce accesa! Ora prova a spegnerla dall\'altro piano.':'Luce spenta. Muovi un deviatore e guarda dove passa la corrente.');
+  }
+}
+window.addEventListener('pointerup',()=>{
+  if(!cTree)return;let ch=false;
+  leaves(cTree).forEach(n=>{if((n.t==='pna'||n.t==='pnc')&&cst[n.k]){cst[n.k]=false;ch=true;}});
+  if(ch)cRender();
+});
+function cInit(){
+  if(cl>=C_LV.length) cl=C_LV.length-1;
+  const L=C_LV[cl];
+  cTree=clone(L.tree);cst=Object.assign({},L.dev||{});cPred={};cSel=null;cWon=false;cHist=[];
+  cShowFlow=L.mode!=='predict';cRevealed=false;
+  if(L.mode==='predict') cRandom();
+  $('#circLvl').textContent='Livello '+(cl+1)+' di '+C_LV.length+': '+L.title;
+  lvDots('circDots',C_LV.length,cl,i=>{cl=i;cInit();});
+  $('#circMission').innerHTML=L.t;
+  $('#cPalWrap').style.display=L.mode==='fix'?'':'none';
+  const pal=$('#cPal');pal.innerHTML='';
+  (L.pal||[]).forEach(k=>{
+    const d=document.createElement('div');d.className='piece';d.textContent=C_PAL[k];
+    d.onclick=()=>{cSel=cSel===k?null:k;[...pal.children].forEach(c=>c.classList.remove('sel'));if(cSel)d.classList.add('sel');};
+    pal.appendChild(d);
+  });
+  const types=new Set(leaves(cTree).map(n=>n.t));
+  $('#cLegend').innerHTML=Object.keys(C_LEG).filter(k=>types.has(k)).map(k=>C_LEG[k]).join('<br>');
+  $('#circSim').style.display=L.mode==='predict'?'':'none';
+  $('#circRetry').style.display='none';
+  $('#circNext').style.display='none';
+  $('#cPanelTitle').textContent=L.mode==='predict'?'Posizione dei comandi (bloccati)':'Comandi';
+  cRender();
+  if(L.mode==='predict') fb('circFb','info','Clicca su ogni lampadina per fare la tua previsione.');
+  else if(L.mode!=='fix') fb('circFb','info','Usa i comandi qui a destra, oppure clicca direttamente sullo schema.');
+}
+function cRandom(){C_LV[cl].rand.forEach(k=>cst[k]=Math.random()<(k==='a'?0.8:0.5));}
+function cVerify(){
+  const L=C_LV[cl],ctr=cControls(),ld=cLoads();
+  if(ld.some(n=>n.t==='broken')) return 'C\'è ancora una lampadina <b>bruciata</b>: la corrente non può attraversarla.';
+  if(ld.length!==L.loads) return ld.length<L.loads?'Mancano dei componenti da accendere: ne servono '+L.loads+'.':'Ci sono troppi componenti da accendere: ne servono '+L.loads+'.';
+  if(!ctr.length) return 'Non c\'è più nessun comando per accendere e spegnere!';
+  const save=Object.assign({},cst);let short=false,sawOn=false,sawOff=false,partial=false;
+  for(let m=0;m<(1<<ctr.length);m++){
+    ctr.forEach((c,i)=>{const b=(m>>i)&1;cst[c.key]=c.t==='dev'?b:!!b;});
+    const s=cSimulate();if(s.short)short=true;
+    const lit=ld.map(x=>!!x.on);
+    if(lit.every(v=>v))sawOn=true;else if(lit.every(v=>!v))sawOff=true;else partial=true;
+  }
+  cst=save;
+  if(short) return '⚠️ Con l\'interruttore chiuso c\'è un <b>cortocircuito</b>: la corrente passa dal filo e salta la lampadina.';
+  if(ld.some(x=>x.t==='led'&&x.dir!==1)) return 'Il LED è montato al contrario: cliccaci sopra per girarlo.';
+  if(partial||!sawOn) return 'Non si accende tutto insieme. Controlla bene i collegamenti!';
+  if(!sawOff) return 'Si accende tutto, ma non c\'è modo di spegnere!';
+  return true;
+}
+function cWin(msg){
+  if(cWon)return;cWon=true;
+  if(cl<C_LV.length-1){fb('circFb','ok',msg);$('#circNext').style.display='';confetti(15);}
+  else{fb('circFb','ok',msg+' 🌟 <b>Sfida completata!</b>');complete('circ');}
+}
+function cRender(){
+  const L=C_LV[cl];
+  const ver=L.mode==='fix'?cVerify():null;
+  const sim=cSimulate();cNameAll();
+  const Lo=cLay(cTree),svg=$('#csvg');svg.innerHTML='';
+  const x0=40,y0=24,by=y0+Lo.h+40,W=Lo.w+80,H=by+46;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('width',W);svg.setAttribute('height',H);
+  cDraw(Lo,x0,y0,svg,sim);
+  const cls=cW(cTree.on,sim.short),ry=y0+Lo.ty,xr=x0+Lo.w,mid=x0+Lo.w/2;
+  line(svg,x0,ry,x0,by,cls);line(svg,xr,ry,xr,by,cls);line(svg,x0,by,mid-10,by,cls);line(svg,mid+10,by,xr,by,cls);
+  line(svg,mid-10,by-18,mid-10,by+18,'batt');el('line',{x1:mid+10,y1:by-9,x2:mid+10,y2:by+9,class:'batt','stroke-width':8},svg);
+  el('text',{x:mid-24,y:by-12,class:'lblb'},svg,'+');el('text',{x:mid+26,y:by-10,class:'lblb'},svg,'−');
+  el('text',{x:mid,y:by+36,class:'lbl'},svg,'🔋 Batteria');
+  // pannello comandi
+  const pan=$('#cPanel');pan.innerHTML='';
+  cControls().forEach(c=>{
+    const b=document.createElement('button');b.className='btn';
+    if(c.t==='sw'){b.textContent=cNames[c.key]+': '+(cst[c.key]?'chiuso':'aperto');if(cst[c.key])b.classList.add('on');b.onclick=()=>{cst[c.key]=!cst[c.key];cRender();};}
+    else if(c.t==='dev'){b.textContent=c.key+(c.key==='D1'?' (piano terra)':' (primo piano)')+': '+(cst[c.key]?'▲ su':'▼ giù');b.onclick=()=>cDev(c.key);}
+    else{b.textContent=cNames[c.key]+': tieni premuto';if(cst[c.key])b.classList.add('press');b.onpointerdown=e=>{e.preventDefault();cst[c.key]=true;cRender();};}
+    if(L.mode==='predict'){b.disabled=true;b.onclick=null;b.onpointerdown=null;}
+    pan.appendChild(b);
+  });
+  if(L.mode==='predict'||cWon) return;
+  if(L.goal==='all'){
+    const ld=cLoads();
+    if(ld.every(x=>x.on)) cWin(`✅ Tutte accese! Hai chiuso l'interruttore, tenuto premuto il pulsante NA e lasciato stare il pulsante NC, che a riposo è già chiuso.`);
+    else if(cHistNote()) {}
+  }
+  if(L.mode==='fix'){
+    if(ver===true) cWin(`✅ Circuito riparato! Ora funziona come doveva.`+(cLoads().some(x=>x.t==='led')?' Il LED è un diodo: lascia passare la corrente in un solo verso.':''));
+    else fb('circFb',sim.short?'ko':'info',ver);
+  }
+}
+function cHistNote(){
+  const ld=cLoads(),n=ld.filter(x=>x.on).length;
+  fb('circFb','info','Lampadine accese: '+n+' su '+ld.length+'.');
+  return true;
+}
+function cSimRun(){
+  const ld=cLoads();
+  if(ld.some(x=>cPred[x.k]===undefined)){fb('circFb','ko','Prima fai la tua previsione su <b>tutte</b> le lampadine!');return;}
+  cShowFlow=true;cRevealed=true;cRender();
+  const ok=ld.every(x=>cPred[x.k]===!!x.on);
+  $('#circSim').style.display='none';
+  if(ok) cWin(`✅ Previsione perfetta! Hai capito come scorre la corrente.`);
+  else{
+    const sh=leaves(cTree).find(n=>n.k==='g');
+    let tip='Guarda dove scorre la corrente (le linee gialle animate).';
+    if(sh&&cst.g&&cst.a) tip='Hai visto? S3 chiuso crea una "scorciatoia" senza lampadine: la corrente passa tutta di lì e L1, L2 restano spente.';
+    else if(!cst.a) tip='S1 è aperto: il circuito è interrotto e non passa corrente da nessuna parte.';
+    fb('circFb','ko','❌ Non proprio. '+tip+' Riprova con una nuova situazione.');
+    $('#circRetry').style.display='';
+  }
+}
+function cRetry(){cRandom();cPred={};cShowFlow=false;cRevealed=false;$('#circSim').style.display='';$('#circRetry').style.display='none';cRender();fb('circFb','info','Nuova situazione: fai la tua previsione.');}
+
+/* =========================================================
+   2. PORTE LOGICHE
+   ========================================================= */
+const GF={AND:(a,b)=>a&&b,OR:(a,b)=>a||b,NOT:a=>!a,NAND:(a,b)=>!(a&&b),NOR:(a,b)=>!(a||b),XOR:(a,b)=>a!==b};
+const FIXT=['AND','OR','NAND','NOR','XOR'];
+const G_LV=[
+  {title:'Prime porte',mode:'predict',h:290,
+   t:`Le <b>porte logiche</b> sono i mattoncini dei processori. Guarda gli ingressi A e B, <b>prevedi</b> cosa faranno le lampadine (cliccaci sopra), poi avvia la simulazione.`,
+   inputs:[{id:'A',y:100},{id:'B',y:200}],
+   gates:[{id:'g1',type:'AND',x:320,y:70,in:['A','B']},{id:'g2',type:'OR',x:320,y:200,in:['A','B']}],
+   lamps:[{id:'L1',x:600,y:95,src:'g1'},{id:'L2',x:600,y:225,src:'g2'}]},
+  {title:'Porte in fila',mode:'predict',h:330,
+   t:`Ora le porte sono collegate tra loro: l'uscita di una diventa l'ingresso della successiva. <b>Prevedi</b> la lampadina, poi avvia: vedrai il segnale propagarsi passo dopo passo.`,
+   inputs:[{id:'A',y:80},{id:'B',y:160},{id:'C',y:270}],
+   gates:[{id:'g1',type:'AND',x:260,y:95,in:['A','B']},{id:'g2',type:'NOT',x:260,y:245,in:['C']},{id:'g3',type:'OR',x:480,y:170,in:['g1','g2'],mx:[405,405]}],
+   lamps:[{id:'L1',x:690,y:195,src:'g3'}]},
+  {title:'Comanda tu',mode:'play',h:400,goal:{L1:0,L2:1,L3:1},
+   t:`Ora gli interruttori sono tuoi. Trova la combinazione di A, B, C, D che fa <b>accendere L2 e L3</b> ma lascia <b>spenta L1</b>.`,
+   inputs:[{id:'A',y:60},{id:'B',y:140},{id:'C',y:220},{id:'D',y:360}],
+   gates:[{id:'g1',type:'OR',x:260,y:70,in:['A','B']},{id:'g2',type:'AND',x:260,y:170,in:['B','C']},{id:'g3',type:'NOT',x:260,y:335,in:['D']},
+          {id:'g6',type:'AND',x:470,y:40,in:['A','g2'],mx:[null,400]},{id:'g4',type:'AND',x:470,y:150,in:['g1','g3'],mx:[430,445]},{id:'g5',type:'OR',x:470,y:260,in:['g2','D'],mx:[400,null]}],
+   lamps:[{id:'L1',x:690,y:65,src:'g6'},{id:'L2',x:690,y:175,src:'g4'},{id:'L3',x:690,y:285,src:'g5'}]},
+  {title:'Ripara l\'allarme',mode:'fix',h:320,
+   expect:v=>v.C&&(v.A||v.B),
+   t:`Un antifurto: la <b>sirena</b> deve suonare quando l'allarme è <b>attivo</b> E (la <b>porta</b> O la <b>finestra</b> sono aperte). Chi l'ha progettato ha sbagliato porte! Clicca sulle porte con 🔧 per cambiarle, finché la tabella è tutta verde.`,
+   inputs:[{id:'A',y:70,label:'Porta'},{id:'B',y:150,label:'Finestra'},{id:'C',y:260,label:'Attivo'}],
+   gates:[{id:'g1',type:'AND',x:280,y:95,in:['A','B'],fix:1},{id:'g2',type:'OR',x:480,y:170,in:['g1','C'],fix:1,mx:[415,null]}],
+   lamps:[{id:'L1',x:690,y:195,src:'g2',label:'🚨 Sirena'}]},
+  {title:'Luce delle scale',mode:'fix',h:320,
+   expect:v=>v.A!==v.B,
+   t:`Ricordi i deviatori delle scale? La luce deve essere accesa quando A e B sono <b>diversi</b>. Questo circuito usa solo AND, OR e NOT ma due porte sono sbagliate. Riparale!`,
+   inputs:[{id:'A',y:80},{id:'B',y:220}],
+   gates:[{id:'n2',type:'NOT',x:220,y:80,in:['B']},{id:'n1',type:'NOT',x:220,y:190,in:['A']},
+          {id:'g1',type:'OR',x:420,y:60,in:['A','n2'],fix:1},{id:'g2',type:'AND',x:420,y:230,in:['n1','B']},
+          {id:'g3',type:'AND',x:560,y:150,in:['g1','g2'],fix:1,mx:[525,525]}],
+   lamps:[{id:'L1',x:710,y:175,src:'g3'}]},
+  {title:'Sfida finale',mode:'predict',h:370,
+   t:`Il circuito più intricato: 4 ingressi, 7 porte, 2 lampadine. Segui il segnale porta dopo porta e <b>prevedi</b> entrambe le lampadine.`,
+   inputs:[{id:'A',y:60},{id:'B',y:140},{id:'C',y:230},{id:'D',y:320}],
+   gates:[{id:'g1',type:'NAND',x:240,y:70,in:['A','B']},{id:'g2',type:'OR',x:240,y:170,in:['B','C']},{id:'g3',type:'NOT',x:240,y:295,in:['D']},
+          {id:'g4',type:'XOR',x:400,y:120,in:['g1','g2'],mx:[355,370]},{id:'g5',type:'AND',x:400,y:250,in:['g2','g3'],mx:[370,385]},
+          {id:'g7',type:'NOR',x:570,y:60,in:['g5','g1'],mx:[490,null]},{id:'g6',type:'AND',x:570,y:190,in:['g4','g5'],mx:[520,520]}],
+   lamps:[{id:'L1',x:720,y:85,src:'g7'},{id:'L2',x:720,y:215,src:'g6'}]}
+];
+let gl=0,gIn={},gGates=[],gPred={},gReveal=Infinity,gRunning=false,gRevealed=false,gWon=false,gTimer=null;
+function gInit(){
+  if(gl>=G_LV.length) gl=G_LV.length-1;
+  clearTimeout(gTimer);
+  const L=G_LV[gl];
+  gGates=clone(L.gates);gIn={};L.inputs.forEach(i=>gIn[i.id]=false);
+  gPred={};gWon=false;gRunning=false;gRevealed=false;
+  if(L.mode==='predict'){gRandom();gReveal=0;}else gReveal=Infinity;
+  $('#logLvl').textContent='Livello '+(gl+1)+' di '+G_LV.length+': '+L.title;
+  lvDots('logDots',G_LV.length,gl,i=>{gl=i;gInit();});
+  $('#logMission').innerHTML=L.t;
+  $('#logSim').style.display=L.mode==='predict'?'':'none';
+  $('#logRetry').style.display='none';$('#logNext').style.display='none';
+  gRender();
+  fb('logFb','info',L.mode==='predict'?'Clicca sulle lampadine per fare la tua previsione.':L.mode==='play'?'Clicca sugli ingressi A, B, C, D per cambiarli (0/1).':'Clicca sulle porte con 🔧 per cambiare tipo. Puoi anche cliccare sugli ingressi per provare.');
+}
+function gRandom(){G_LV[gl].inputs.forEach(i=>gIn[i.id]=Math.random()<0.5);}
+function gEval(inp){
+  const v=Object.assign({},inp);
+  gGates.forEach(g=>{const a=g.in.map(x=>v[x]);v[g.id]=g.type==='NOT'?GF.NOT(a[0]):GF[g.type](a[0],a[1]);});
+  return v;
+}
+function gDepths(){
+  const d={};G_LV[gl].inputs.forEach(i=>d[i.id]=0);
+  gGates.forEach(g=>d[g.id]=1+Math.max(...g.in.map(x=>d[x])));
+  G_LV[gl].lamps.forEach(l=>d[l.id]=d[l.src]+1);
+  return d;
+}
+function gSrc(id){
+  const L=G_LV[gl],i=L.inputs.findIndex(x=>x.id===id);
+  if(i>=0) return {p:[90,L.inputs[i].y],inp:i};
+  const g=gGates.find(x=>x.id===id);return {p:[g.x+70,g.y+25]};
+}
+function gInPt(g,j){return g.in.length===1?[g.x,g.y+25]:[g.x,g.y+(j?35:15)];}
+function gWire(svg,srcId,tp,mx,cls){
+  const s=gSrc(srcId),[sx,sy]=s.p,[tx,ty]=tp;
+  if(mx==null) mx=s.inp!==undefined?120+35*s.inp:(sx+tx)/2;
+  el('path',{d:'M'+sx+' '+sy+' H'+mx+' V'+ty+' H'+tx,class:cls},svg);
+}
+function gDrawGate(p,g,s,stIn){
+  const x=g.x,y=g.y,c='gs '+s,t=g.type;let tip=55,bub=false,stub=0;
+  if(t==='OR'||t==='NOR') stub=7;if(t==='XOR') stub=13;
+  g.in.forEach((src,j)=>{const [ix,iy]=gInPt(g,j);if(stub)line(p,ix,iy,ix+stub,iy,'lw '+stIn(src));});
+  if(t==='AND'||t==='NAND'){el('path',{d:'M'+x+','+y+' H'+(x+30)+' A25,25 0 0 1 '+(x+30)+','+(y+50)+' H'+x+' Z',class:c},p);bub=t==='NAND';}
+  else if(t==='OR'||t==='NOR'||t==='XOR'){
+    const o=t==='XOR'?6:0;
+    el('path',{d:'M'+(x+o)+','+y+' Q'+(x+o+15)+','+(y+25)+' '+(x+o)+','+(y+50)+' Q'+(x+40)+','+(y+50)+' '+(x+55)+','+(y+25)+' Q'+(x+40)+','+y+' '+(x+o)+','+y+' Z',class:c},p);
+    if(o) el('path',{d:'M'+(x-1)+','+y+' Q'+(x+14)+','+(y+25)+' '+(x-1)+','+(y+50),class:'gs2 '+s},p);
+    bub=t==='NOR';
+  }
+  else if(t==='NOT'){el('path',{d:'M'+x+','+(y+5)+' L'+(x+46)+','+(y+25)+' L'+x+','+(y+45)+' Z',class:c},p);tip=46;bub=true;}
+  if(bub){el('circle',{cx:x+tip+5,cy:y+25,r:5,class:c},p);tip+=10;}
+  if(tip<70) line(p,x+tip,y+25,x+70,y+25,'lw '+s);
+  el('text',{x:x+(t==='NOT'?16:(t==='XOR'?28:24)),y:y+29,class:'gt'},p,t);
+}
+function gRender(){
+  const L=G_LV[gl],v=gEval(gIn),d=gDepths(),svg=$('#gsvg');svg.innerHTML='';
+  svg.setAttribute('viewBox','0 0 800 '+L.h);svg.setAttribute('height',L.h);
+  const st=id=>d[id]<=gReveal?(v[id]?'on':'off'):'';
+  gGates.forEach(g=>g.in.forEach((s,j)=>gWire(svg,s,gInPt(g,j),g.mx?g.mx[j]:null,'lw '+st(s))));
+  L.lamps.forEach(l=>gWire(svg,l.src,[l.x-20,l.y],null,'lw '+st(l.src)));
+  L.inputs.forEach(i=>{
+    const g=el('g',{class:'inbox '+(gIn[i.id]?'on':'off')+(L.mode==='predict'?' locked':'')},svg);
+    el('rect',{x:30,y:i.y-20,width:60,height:40,rx:8},g);
+    el('text',{x:60,y:i.y-2,class:'it'},g,i.id);
+    el('text',{x:60,y:i.y+14,class:'iv'},g,gIn[i.id]?'1 · ON':'0 · OFF');
+    if(i.label) el('text',{x:60,y:i.y-26,class:'lbl'},g,i.label);
+    if(L.mode!=='predict') g.onclick=()=>{gIn[i.id]=!gIn[i.id];gRender();};
+  });
+  gGates.forEach(g=>{
+    const gg=el('g',{class:g.fix&&L.mode==='fix'?'fixg':''},svg);
+    gDrawGate(gg,g,st(g.id),st);
+    if(g.fix&&L.mode==='fix'){
+      el('text',{x:g.x+50,y:g.y-6,'font-size':15},gg,'🔧');
+      gg.onclick=()=>{g.type=FIXT[(FIXT.indexOf(g.type)+1)%FIXT.length];gRender();};
+    }
+  });
+  L.lamps.forEach(l=>{
+    const lit=d[l.id]<=gReveal&&v[l.src],g=el('g',{class:L.mode==='predict'?'comp':''},svg);
+    el('circle',{cx:l.x,cy:l.y,r:20,class:'lampc'+(lit?' lit':'')},g);
+    line(g,l.x-14,l.y-14,l.x+14,l.y+14,'sym');line(g,l.x-14,l.y+14,l.x+14,l.y-14,'sym');
+    el('text',{x:l.x,y:l.y+40,class:'lblb'},g,l.label||l.id);
+    if(L.mode==='predict'){
+      let txt,c='ptag';
+      if(!gRevealed) txt=gPred[l.id]===undefined?'❓ clicca':(gPred[l.id]?'💡 accesa?':'⚫ spenta?');
+      else{const on=!!v[l.src];txt=(gPred[l.id]===on?'✅ ':'❌ ')+(on?'accesa':'spenta');c+=gPred[l.id]===on?' good':' bad';}
+      el('text',{x:l.x,y:l.y-30,class:c},g,txt);
+      g.onclick=()=>{if(gRevealed||gRunning)return;gPred[l.id]=gPred[l.id]===true?false:true;gRender();};
+    }
+  });
+  gSide(v);
+}
+function gSide(v){
+  const L=G_LV[gl];$('#gGoals').innerHTML='';$('#gTable').innerHTML='';
+  if(L.mode==='play'){
+    let all=true;
+    $('#gGoals').innerHTML=L.lamps.map(l=>{const ok=!!v[l.src]===!!L.goal[l.id];if(!ok)all=false;return '<div class="goal'+(ok?' okg':'')+'">'+(ok?'✅ ':'⬜ ')+l.id+' '+(L.goal[l.id]?'accesa':'spenta')+'</div>';}).join('');
+    if(all&&!gWon) gWin(`✅ Trovata! A=0, B=1, C=1, D=0. Per risolverla hai dovuto ragionare all'indietro, dalla lampadina agli ingressi: è quello che fa un progettista di circuiti.`);
+  }
+  if(L.mode==='fix'){
+    const ids=L.inputs.map(i=>i.id),src=L.lamps[0].src;let all=true;
+    let h='<table class="tt"><tr>'+ids.map(i=>'<th>'+i+'</th>').join('')+'<th>Deve essere</th><th>Ora è</th><th></th></tr>';
+    for(let m=0;m<(1<<ids.length);m++){
+      const inp={};ids.forEach((id,i)=>inp[id]=!!((m>>(ids.length-1-i))&1));
+      const exp=!!L.expect(inp),act=!!gEval(inp)[src],ok=exp===act;if(!ok)all=false;
+      const cur=ids.every(id=>inp[id]===gIn[id]);
+      h+='<tr class="'+(cur?'cur':'')+'">'+ids.map(id=>'<td>'+(inp[id]?1:0)+'</td>').join('')+'<td>'+(exp?1:0)+'</td><td class="'+(ok?'good':'bad')+'">'+(act?1:0)+'</td><td>'+(ok?'✅':'❌')+'</td></tr>';
+    }
+    $('#gTable').innerHTML=h+'</table>';
+    if(all&&!gWon) gWin(gl===4?`✅ Riparato! Hai costruito una porta <b>XOR</b> usando solo AND, OR e NOT: è proprio la logica della luce delle scale.`:`✅ Allarme riparato! Ora la sirena suona solo quando deve. Tutta la tabella è verde.`);
+    else if(!all) fb('logFb','info','Le righe con ❌ non funzionano ancora come dovrebbero. Clicca sulle porte con 🔧 per cambiarle.');
+  }
+}
+function gWin(msg){
+  gWon=true;
+  if(gl<G_LV.length-1){fb('logFb','ok',msg);$('#logNext').style.display='';confetti(15);}
+  else{fb('logFb','ok',msg+' 🌟 <b>Sfida completata!</b>');complete('logic');}
+}
+function gSimRun(){
+  const L=G_LV[gl];
+  if(gRunning)return;
+  if(L.lamps.some(l=>gPred[l.id]===undefined)){fb('logFb','ko','Prima fai la tua previsione su <b>tutte</b> le lampadine!');return;}
+  gRunning=true;$('#logSim').style.display='none';
+  const d=gDepths(),max=Math.max(...Object.values(d));
+  fb('logFb','info','Simulazione in corso: il segnale attraversa le porte...');
+  gReveal=0;
+  const step=()=>{
+    gReveal++;gRender();
+    if(gReveal<max){gTimer=setTimeout(step,650);return;}
+    gRunning=false;gRevealed=true;gRender();
+    const v=gEval(gIn),ok=L.lamps.every(l=>gPred[l.id]===!!v[l.src]);
+    if(ok) gWin(gl===G_LV.length-1?`✅ Previsione perfetta su un circuito di 7 porte!`:`✅ Previsione perfetta! Verde = 1, rosso = 0: segui i colori per vedere il percorso.`);
+    else{fb('logFb','ko','❌ Non proprio: segui i colori dei fili porta per porta per capire dove cambia il segnale. Poi riprova.');$('#logRetry').style.display='';}
+  };
+  gTimer=setTimeout(step,300);
+}
+function gRetry(){gRandom();gPred={};gReveal=0;gRevealed=false;$('#logSim').style.display='';$('#logRetry').style.display='none';gRender();fb('logFb','info','Nuovi ingressi: fai la tua previsione.');}
+
+/* =========================================================
+   3. BINARIO (un byte)
+   ========================================================= */
+const BW=[128,64,32,16,8,4,2,1],BIN_ROUNDS=5;
+let br=0,bt=0,bs=[],binLock=false,bLetter='';
+function binInit(){br=0;binRound();}
+function binRound(){
+  bs=Array(8).fill(0);binLock=false;bLetter='';
+  if(br===0) bt=5+rnd(27); else if(br===1) bt=32+rnd(96); else if(br===2) bt=128+rnd(128); else if(br===3) bt=1+rnd(255);
+  else{bLetter=String.fromCharCode(65+rnd(26));bt=bLetter.charCodeAt(0);}
+  $('#binLvl').textContent='Round '+(br+1)+' di '+BIN_ROUNDS;
+  $('#binTarget').innerHTML=bLetter?'Scrivi la lettera<b>'+bLetter+'</b><small>Per il computer anche le lettere sono numeri: '+bLetter+' = '+bt+' (codice ASCII)</small>':'Fai apparire il numero<b>'+bt+'</b>'+(br===2?'<small>Suggerimento: parti sempre dalla lampadina che vale di più</small>':'');
+  binRender();
+}
+function binRender(){
+  const box=$('#bulbs');box.innerHTML='';
+  BW.forEach((v,i)=>{
+    const d=document.createElement('div');d.className='bulb';
+    d.innerHTML='<div class="em '+(bs[i]?'lit':'off')+'">💡</div><div class="v">'+v+'</div>';
+    d.onclick=()=>{if(binLock)return;bs[i]=bs[i]?0:1;binRender();};
+    box.appendChild(d);
+  });
+  const sum=BW.reduce((s,v,i)=>s+(bs[i]?v:0),0);
+  const reg=$('#reg');reg.innerHTML='';reg.className='reg'+(sum===bt?' okreg':'');
+  bs.forEach((b,i)=>{if(i===4)reg.insertAdjacentHTML('beforeend','<span class="gap"></span>');reg.insertAdjacentHTML('beforeend','<span class="'+(b?'one':'')+'">'+b+'</span>');});
+  $('#regsub').innerHTML='in decimale: <b>'+sum+'</b>'+(bLetter&&sum>=32&&sum<127?' &nbsp;·&nbsp; come carattere: <b>'+String.fromCharCode(sum)+'</b>':'');
+  if(sum===bt&&!binLock){
+    binLock=true;
+    const bin=bs.join('');
+    if(br<BIN_ROUNDS-1){fb('binFb','ok','✅ Esatto! '+bt+' = '+bin.slice(0,4)+' '+bin.slice(4)+' in binario. Prossimo...');setTimeout(()=>{br++;binRound();},2000);}
+    else{fb('binFb','ok','✅ '+bin+' = '+bLetter+'! Ogni lettera che scrivi in un messaggio viene salvata così, un byte alla volta. 🌟 <b>Sfida completata!</b>');complete('bin');}
+  } else if(!binLock){
+    if(sum>bt) fb('binFb','ko','Troppo! Hai superato di '+(sum-bt)+'. Spegni qualcosa.');
+    else fb('binFb','info',sum===0?'Clicca sulle lampadine per accenderle.':'Ti manca '+(bt-sum)+'.');
+  }
+}
+
+/* ---------- 4. ROBOT ---------- */
+const ROB_LV=[
+  {m:['R.#..','..#..','..#.B','.....','.....'],max:12,t:'Porta il robot alla batteria 🔋. Componi il programma con le frecce, poi premi <b>Esegui</b>.'},
+  {m:['R...','###.','....','B###'],max:12,t:'Il percorso è a serpente: pianifica bene tutti i passi prima di eseguire!'},
+  {m:['R..#.','.#.#.','.#...','...#.','S#..B'],max:14,t:'Prima raccogli la stella ⭐, poi vai alla batteria 🔋!'}
+];
+const DIR={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},ARR={U:'⬆️',D:'⬇️',L:'⬅️',R:'➡️'};
+let rl=0,prog=[],rx=0,ry=0,sx=0,sy=0,star=false,running=false,robTimer=null;
+function robInit(){
+  if(rl>=ROB_LV.length) rl=ROB_LV.length-1;
+  clearTimeout(robTimer);running=false;prog=[];
+  const L=ROB_LV[rl];
+  $('#robLvl').textContent='Livello '+(rl+1)+' di '+ROB_LV.length;lvDots('robDots',ROB_LV.length,rl,i=>{rl=i;robInit();});
+  $('#robMission').innerHTML=L.t;
+  const g=$('#grid');g.innerHTML='';g.style.gridTemplateColumns='repeat('+L.m[0].length+',62px)';
+  L.m.forEach((row,y)=>[...row].forEach((c,x)=>{
+    const d=document.createElement('div');d.className='cell'+(c==='#'?' wall':'');d.id='c'+x+'_'+y;
+    d.textContent=c==='#'?'🧱':c==='B'?'🔋':c==='S'?'⭐':'';
+    if(c==='R'){sx=x;sy=y;}
+    g.appendChild(d);
+  }));
+  g.insertAdjacentHTML('beforeend','<div class="robot" id="rob"><span id="robIn">🤖</span></div>');
+  $('#robNext').style.display='none';
+  robReset();robProg();
+  fb('robFb','info','Aggiungi le frecce al programma. Massimo '+L.max+' blocchi.');
+}
+function robReset(){
+  rx=sx;ry=sy;star=false;robPlace();
+  const L=ROB_LV[rl];
+  L.m.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==='S')document.getElementById('c'+x+'_'+y).textContent='⭐';}));
+  document.querySelectorAll('.blk').forEach(b=>b.classList.remove('cur'));
+}
+function robPlace(){$('#rob').style.transform='translate('+(rx*66)+'px,'+(ry*66)+'px)';}
+function robProg(){
+  const p=$('#prog');p.innerHTML='';
+  if(!prog.length) p.innerHTML='<span class="empty">Il programma è vuoto...</span>';
+  prog.forEach((c,i)=>{
+    const b=document.createElement('span');b.className='blk';b.textContent=ARR[c];
+    b.onclick=()=>{if(running)return;prog.splice(i,1);robProg();};
+    p.appendChild(b);
+  });
+  $('#robCount').textContent='('+prog.length+'/'+ROB_LV[rl].max+')';
+}
+function robAdd(c){
+  if(running)return;
+  if(prog.length>=ROB_LV[rl].max){fb('robFb','ko','Hai raggiunto il massimo di blocchi!');return;}
+  prog.push(c);robProg();
+}
+function robUndo(){if(running)return;prog.pop();robProg();}
+function robClear(){if(running)return;prog=[];robProg();robReset();}
+function robRun(){
+  if(running)return;
+  if(!prog.length){fb('robFb','info','Prima aggiungi qualche freccia al programma!');return;}
+  running=true;robReset();fb('robFb','info','Il robot sta eseguendo il programma...');
+  const L=ROB_LV[rl],needStar=L.m.some(r=>r.includes('S')),blks=document.querySelectorAll('.blk');
+  let i=0;
+  const step=()=>{
+    blks.forEach(b=>b.classList.remove('cur'));
+    if(i>=prog.length){
+      running=false;
+      const onB=L.m[ry][rx]==='B';
+      fb('robFb','ko',onB&&needStar&&!star?'Sei arrivato alla batteria, ma <b>manca la stella</b>! Riprova.':'Il programma è finito ma il robot non è arrivato alla batteria. Aggiungi o correggi qualche passo!');
+      robTimer=setTimeout(robReset,1500);return;
+    }
+    blks[i].classList.add('cur');
+    const nx=rx+DIR[prog[i]][0],ny=ry+DIR[prog[i]][1];
+    if(ny<0||nx<0||ny>=L.m.length||nx>=L.m[0].length||L.m[ny][nx]==='#'){
+      $('#robIn').classList.add('shake');
+      fb('robFb','ko','💥 Bonk! Il robot ha sbattuto al passo '+(i+1)+'. Correggi quel blocco e riprova.');
+      running=false;
+      robTimer=setTimeout(()=>{$('#robIn').classList.remove('shake');robReset();},1300);return;
+    }
+    rx=nx;ry=ny;robPlace();
+    if(L.m[ry][rx]==='S'&&!star){star=true;document.getElementById('c'+rx+'_'+ry).textContent='';}
+    if(L.m[ry][rx]==='B'&&(!needStar||star)){
+      running=false;
+      if(rl<ROB_LV.length-1){fb('robFb','ok','✅ Arrivato! Hai scritto un <b>algoritmo</b>: una sequenza di istruzioni precise.');$('#robNext').style.display='';confetti(15);}
+      else{fb('robFb','ok','✅ Missione compiuta! I programmatori fanno proprio questo: scrivono istruzioni che una macchina esegue alla lettera. 🌟 <b>Sfida completata!</b>');complete('robot');}
+      return;
+    }
+    i++;robTimer=setTimeout(step,420);
+  };
+  robTimer=setTimeout(step,250);
+}
+
+/* ---------- 5. CSS ---------- */
+const CSS_PROPS=[['background-color','white'],['color','black'],['font-size','18px'],['text-align','left'],['border-radius','0px'],['border','4px solid gray'],['padding','20px'],['font-family','Arial']];
+function isCol(str,ch){
+  const m=(str.match(/[\d.]+/g)||[]).map(Number);if(m.length<3)return false;
+  const [r,g,b]=m;if(m.length>3&&m[3]===0)return false;
+  if(ch==='g')return g>=90&&g>r+30&&g>b+30;
+  return r>=150&&r>g+60&&r>b+60;
+}
+const CSS_M=[
+  {t:'Fai diventare lo <b>SFONDO</b> della pagina <b>verde</b> 🟩',p:'background-color',ok:c=>isCol(c.backgroundColor,'g'),
+   h:['Sfondo in inglese si dice <b>background</b>.','Cambia il valore di <code>background-color</code> in <code>green</code>.']},
+  {t:'Ora colora il <b>TESTO</b> di <b>rosso</b> 🟥',p:'color',ok:c=>isCol(c.color,'r'),
+   h:['Il colore del testo si chiama semplicemente <b>color</b>.','Scrivi <code>red</code> accanto a <code>color</code>.']},
+  {t:'Arrotonda gli <b>ANGOLI</b> della pagina',p:'border-radius',ok:c=>parseFloat(c.borderTopLeftRadius)>=15,
+   h:['Cerca la parola <b>radius</b> (raggio della curva).','Metti <code>30px</code> in <code>border-radius</code>.']},
+  {t:'Metti il testo al <b>CENTRO</b>',p:'text-align',ok:c=>c.textAlign==='center',
+   h:['Allineare si dice <b>align</b>.','Scrivi <code>center</code> in <code>text-align</code>.']},
+  {t:'Scrivi più <b>GRANDE</b> (almeno 32px)',p:'font-size',ok:c=>parseFloat(c.fontSize)>=32,
+   h:['Grandezza del carattere: <b>font-size</b>.','Scrivi <code>40px</code> in <code>font-size</code>.']}
+];
+let cm=0,hintN=0,cssWon=false;
+function cssInit(){
+  if(cm>=CSS_M.length) cm=CSS_M.length-1;
+  hintN=0;cssWon=false;
+  $('#cssLvl').textContent='Missione '+(cm+1)+' di '+CSS_M.length;lvDots('cssDots',CSS_M.length,cm,i=>{cm=i;cssInit();});
+  $('#cssMission').innerHTML=CSS_M[cm].t;
+  $('#cssNext').style.display='none';
+  if(cm===0) cssBuild(); else {cssCheck(null);}
+  fb('cssFb','info','Clicca sui valori arancioni nel codice e prova a cambiarli. Trova la riga giusta!');
+}
+function cssBuild(){
+  const ed=$('#editor'),fake=$('#fake');ed.innerHTML='';fake.removeAttribute('style');
+  const lines=['<span class="csel">.pagina</span> <span class="punc">{</span>'];
+  CSS_PROPS.forEach(([p,v])=>lines.push('&nbsp;&nbsp;<span class="prop">'+p+'</span><span class="punc">:</span> <input data-p="'+p+'" value="'+v+'" size="'+(v.length+1)+'" spellcheck="false"><span class="punc">;</span>'));
+  lines.push('<span class="punc">}</span>');
+  lines.forEach((h,i)=>{
+    const d=document.createElement('div');d.className='ln';d.style.animationDelay=(i*0.07)+'s';
+    d.innerHTML='<span class="no">'+(i+1)+'</span>'+h;ed.appendChild(d);
+  });
+  ed.querySelectorAll('input').forEach(inp=>{
+    fake.style.setProperty(inp.dataset.p,inp.value);
+    inp.oninput=()=>{
+      const p=inp.dataset.p,v=inp.value.trim();
+      inp.size=Math.max(inp.value.length+1,3);
+      const okv=v===''||CSS.supports(p,v);inp.classList.toggle('bad',!okv);
+      if(okv&&v) fake.style.setProperty(p,v);
+      setTimeout(()=>cssCheck(p),520);
+    };
+  });
+}
+function cssCheck(changed){
+  const M=CSS_M[cm],c=getComputedStyle($('#fake'));
+  document.querySelectorAll('.ln').forEach(l=>l.classList.remove('hit'));
+  if(M.ok(c)){
+    const inp=document.querySelector('.ln input[data-p="'+M.p+'"]');if(inp)inp.parentElement.classList.add('hit');
+    if(cm<CSS_M.length-1){fb('cssFb','ok','✅ Trovato! La proprietà giusta era <code>'+M.p+'</code>.');$('#cssNext').style.display='';}
+    else{fb('cssFb','ok','✅ Hai modificato un sito come fanno i web designer! 🌟 <b>Sfida completata!</b>');complete('css');}
+    if(!cssWon&&changed){cssWon=true;confetti(15);}
+  } else if(changed&&changed!==M.p){
+    fb('cssFb','info','Hai cambiato <code>'+changed+'</code>: guarda cosa è successo alla pagina! Ma la missione chiede un\'altra cosa 😉');
+  } else if(changed){
+    fb('cssFb','info','Sei sulla riga giusta! Ora trova il valore giusto.');
+  }
+}
+function cssHint(){fb('cssFb','info','💡 '+CSS_M[cm].h[Math.min(hintN,1)]);hintN++;}
+
+
+/* ---------- AVVIO ---------- */
+cInit();gInit();binInit();robInit();cssInit();updateStars();
+</script>
+</body>
+</html>
